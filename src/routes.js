@@ -25,7 +25,7 @@ const routes = [
   {
     method: 'PUT',
     path: '/books/{id}',
-    handler: editBookByIdHandler, // handler Kriteria 4 Menggunakan EditBookByIdHandler
+    handler: editBookByIdHandler, // handler Kriteria 4 Menggunakan editBookByIdHandler
   },
   {
     method: 'DELETE',

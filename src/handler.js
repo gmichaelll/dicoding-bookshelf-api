@@ -1,4 +1,4 @@
-const { nanoid } = require('nanoid');  
+const { nanoid } = require('nanoid');
 const books = require('./books');
 
 // Kriteria 1: API Dapat Menyimpan Buku
@@ -35,7 +35,7 @@ const addBookHandler = (request, h) => {
 
   const id = nanoid(16); // berisikan 16 id, dengan menggunakan external modul nanoid;
   const insertedAt = new Date().toISOString();
-  const updateAt = insertedAt;
+  const updatedAt = insertedAt;
   const finished = (pageCount === readPage);
   const newBook = {
     id,
@@ -49,7 +49,7 @@ const addBookHandler = (request, h) => {
     finished,
     reading,
     insertedAt,
-    updateAt,
+    updatedAt,
   };
 
   books.push(newBook); // push data object newbook ke books.js
@@ -69,7 +69,7 @@ const addBookHandler = (request, h) => {
   }
   // Server gagal memasukkan buku karena alasan umum (generic error)
   const response = h.response({
-    status: 'error',
+    status: 'fail',
     message: 'Buku gagal ditambahkan',
   });
   response.code(500); // Internal Server Error
@@ -112,7 +112,7 @@ const getAllBooksHandler = (request, h) => {
 
 const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
-  const book = books.filter((b) => b.id === id) [0];
+  const book = books.filter((b) => b.id === id)[0];
   // Bila buku dengan id yang dilampirkan ditemukan
   if (book !== undefined) {
     return {
@@ -145,7 +145,7 @@ const editBookByIdHandler = (request, h) => {
     reading,
   } = request.payload;
 
-  const updateAt = new Date().toISOString();
+  const updatedAt = new Date().toISOString();
   const index = books.findIndex((book) => book.id === id);
 
   if (index !== -1) {
@@ -162,7 +162,7 @@ const editBookByIdHandler = (request, h) => {
     if (pageCount < readPage) {
       const response = h.response({
         status: 'fail',
-        message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount'
+        message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
       });
       response.code(400); // Bad Request
       return response;
@@ -181,7 +181,7 @@ const editBookByIdHandler = (request, h) => {
       readPage,
       finished,
       reading,
-      updateAt,
+      updatedAt,
     };
     // Bila buku berhasil diperbarui
     const response = h.response({
@@ -208,6 +208,7 @@ const deleteBookByIdHandler = (request, h) => {
 
   if (index !== -1) {
     books.splice(index, 1);
+    // Bila id dimiliki oleh salah satu buku
     const response = h.response({
       status: 'success',
       message: 'Buku berhasil dihapus',
@@ -215,7 +216,7 @@ const deleteBookByIdHandler = (request, h) => {
     response.code(200); // OK
     return response;
   }
-
+  // Bila id yang dilampirkan tidak dimiliki oleh buku mana pun
   const response = h.response({
     status: 'fail',
     message: 'Buku gagal dihapus. Id tidak ditemukan',
